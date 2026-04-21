@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>トランプひろば</title>
+    <meta name="description" content="トランプのさまざまな遊び方を、画像つきで分かりやすく紹介。大富豪からポーカー、ソリティアまで幅広く網羅。">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="min-h-screen flex flex-col antialiased">
+    <!-- List View -->
+    <div id="list-view">
+        <header class="p-6 md:pt-10 md:px-10 md:pb-4 max-w-7xl mx-auto w-full">
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+                <div>
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="w-12 h-12 rounded-xl bg-[#E59A9C] flex items-center justify-center shadow-sm">
+                            <span class="material-icons text-white">grid_view</span>
+                        </div>
+                        <h1 class="text-4xl font-[900] tracking-tighter text-[#4A4541]">トランプひろば</h1>
+                    </div>
+                    <p class="text-sm font-bold text-[#A69F98]">トランプのさまざまな遊び方を、画像つきで分かりやすく紹介しています。</p>
+                </div>
+            </div>
+
+            <div class="mt-8 space-y-4">
+                <div class="flex flex-wrap items-center gap-4">
+                    <span class="text-[10px] font-black text-[#A69F98] uppercase tracking-[0.1em]">あそぶ人数</span>
+                    <div id="filter-players-container" class="flex gap-1 overflow-x-auto no-scrollbar pb-1">
+                        <button class="filter-chip px-2 py-1 text-xs" onclick="handleTagClick('players', '1')"><span class="material-icons">person</span>1人</button>
+                        <button class="filter-chip px-2 py-1 text-xs" onclick="handleTagClick('players', '2')"><span class="material-icons">people</span>2人</button>
+                        <button class="filter-chip px-2 py-1 text-xs" onclick="handleTagClick('players', '3+')"><span class="material-icons">groups</span>3人〜</button>
+                    </div>
+                </div>
+                <div class="flex flex-wrap items-center gap-4">
+                    <span class="text-[10px] font-black text-[#A69F98] uppercase tracking-[0.1em]">ゲームの特徴</span>
+                    <div id="filter-traits-container" class="flex gap-1 overflow-x-auto no-scrollbar pb-1">
+                        <button class="filter-chip px-2 py-1 text-xs" onclick="handleTagClick('traits', 'strategy')"><span class="material-icons">psychology</span>戦略</button>
+                        <button class="filter-chip px-2 py-1 text-xs" onclick="handleTagClick('traits', 'luck')"><span class="material-icons">casino</span>運</button>
+                        <button class="filter-chip px-2 py-1 text-xs" onclick="handleTagClick('traits', 'memory')"><span class="material-icons">auto_stories</span>記憶力</button>
+                        <button class="filter-chip px-2 py-1 text-xs" onclick="handleTagClick('traits', 'reflex')"><span class="material-icons">bolt</span>瞬発力</button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="max-w-7xl mx-auto px-6 pb-20 w-full">
+            <div id="game-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"></div>
+        </main>
+    </div>
+
+    <!-- Detail View (SPA) -->
+    <div id="detail-view" class="hidden min-h-screen bg-white">
+        <div class="max-w-3xl mx-auto pb-20">
+            <nav class="sticky top-0 bg-white/80 backdrop-blur-md z-20 p-4 md:p-6 mb-4">
+                <button onclick="location.hash=''" class="flex items-center gap-2 text-[#A69F98] hover:text-[#4A4541] font-black py-2 transition-colors">
+                    <span class="material-icons">arrow_back</span>
+                    <span class="text-xs uppercase tracking-widest">もどる</span>
+                </button>
+            </nav>
+
+            <div id="detail-header-box" class="px-6 md:px-10 pb-6 flex flex-col items-center text-center">
+                <div id="detail-image-container" class="w-full h-56 md:h-80 bg-[#F9F5F1] rounded-[32px] mb-8 overflow-hidden flex items-center justify-center"></div>
+                <h2 id="detail-title" class="text-3xl md:text-5xl font-[900] mb-4 tracking-tight text-[#4A4541]"></h2>
+                <div id="detail-players-container" class="flex flex-wrap justify-center gap-1.5 mb-6"></div>
+            </div>
+            
+            <div class="px-6 md:px-10">
+                <div id="detail-params-grid" class="grid grid-cols-1 gap-3 mb-10 bg-[#F9F5F1] p-6 rounded-[32px]"></div>
+
+                <p id="detail-description" class="text-[#4A4541] font-bold leading-relaxed mb-10 text-center text-base md:text-lg"></p>
+                
+                <div class="mb-12 p-8 rounded-[32px] border-2 border-[#EEEAE6]">
+                    <h4 class="text-sm font-black text-[#A69F98] uppercase tracking-[0.15em] mb-6 text-center">用意するもの</h4>
+                    <div id="detail-requirements-list" class="flex flex-wrap justify-center gap-4"></div>
+                </div>
+
+                <div class="mb-12">
+                    <h4 class="text-sm font-black text-[#A69F98] uppercase tracking-[0.15em] mb-8 text-center">ゲームの流れ</h4>
+                    <div id="detail-rules-steps" class="space-y-6"></div>
+                </div>
+
+                <div id="detail-hands-section" class="mb-12 hidden">
+                    <h4 id="detail-hands-title" class="text-sm font-black text-[#A69F98] uppercase tracking-[0.15em] mb-8 text-center">強さ一覧</h4>
+                    <div id="detail-hands-list" class="space-y-4"></div>
+                </div>
+
+                <div id="detail-local-rules-section" class="mb-12 hidden">
+                    <h4 id="detail-local-rules-title" class="text-sm font-black text-[#A69F98] uppercase tracking-[0.15em] mb-8 text-center">追加できるオプションルール</h4>
+                    <div id="detail-local-rules-list" class="space-y-4"></div>
+                </div>
+
+                <div id="detail-notes-section" class="bg-[#F9F5F1] rounded-[40px] p-8 md:p-10 mb-12 hidden border-l-[16px]">
+                    <h4 id="detail-notes-title" class="text-sm font-black text-[#A69F98] uppercase tracking-[0.15em] mb-6">Master's Tip</h4>
+                    <ul id="detail-notes-list" class="space-y-4"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const traitNames = { strategy: '戦略', luck: '運', memory: '記憶力', reflex: '瞬発力' };
+        const traitIcons = { strategy: 'psychology', luck: 'casino', memory: 'auto_stories', reflex: 'bolt' };
+        
+        const playerTagMeta = {
+            '1': { label: '1人', icon: 'person' },
+            '2': { label: '2人', icon: 'people' },
+            '3+': { label: '3人〜', icon: 'groups' }
+        };
+
+        const games = [
+            {
+                id: 'daifugo',
+                name: '大富豪',
+                catch: '革命で世界をひっくり返せ！',
+                playerTags: ['3+'],
+                traits: { strategy: 5, luck: 3, memory: 4, reflex: 1 },
+                requirements: ['トランプ52枚', 'ジョーカー 1〜2枚'],
+                image: 'header_daifugo.png', 
+                color: '#E59A9C',
+                icon: 'military_tech',
+                description: '全員に配られた手札を一番早くなくした人が勝ち！カードを出すたびに階級が決まる、トランプの定番ゲームです。',
+                rules: [
+                    '【準備】プレイヤー全員に、すべてのカードを裏向きのまま配ります。',
+                    'プレイヤーは手札のカードを順番に出していきます。場にあるカードより強いカードを出すことができます。出せない、または出したくない場合はパスが可能です。',
+                    '全員がパスして一周したとき、最後にカードを出した人の番から再開します。',
+                    '【勝利条件】手札がすべてなくなった人から上がり（勝ち）となります。上がった順に「大富豪」「富豪」などの階級が与えられます。'
+                ],
+                ruleImages: {
+                    0: 'rule_daifugo0.png'
+                },
+                hands: [
+                    { name: 'カードの強さ', detail: '3が最も弱く、2が最強です。', image: 'hand_daifugo1.png' }
+                ],
+                localRules: [
+                    { name: '革命', detail: '同じ数字のカードを4枚出すと、カードの強さが逆転します（3が最強になります）。' },
+                    { name: '8切り', detail: '8を出すと、強制的に場が流れます（8を出した人から再開します。' },
+                    { name: '縛り', detail: '同じマークが2回連続で出ると、その場が流れるまで同じマークしか出せなくなります。' },
+                    { name: 'スペ3返し', detail: '最強のジョーカーに対し、スペードの3を出して無効化できます。' },
+                    { name: '11バック', detail: 'Jを出すと、その場が流れるまでカードの強さが逆転します。' }
+                ],
+                notesTitle: '2回目以降のルール（カード交換）',
+                notes: [
+                    '次のゲームが始まる前にカード交換を行います。大貧民は、自分の持っている「最も強いカード」を大富豪に渡します。大富豪は、自分の持っている「不要なカード」を大貧民に渡します。',
+                    'ジョーカーはどんなカードの代わりになることができ、2より強いカードとして出せます。'
+                ]
+            },
+            {
+                id: 'speed',
+                name: 'スピード',
+                catch: '反射神経の限界へ挑め',
+                playerTags: ['2'],
+                traits: { strategy: 1, luck: 2, memory: 1, reflex: 5 },
+                requirements: ['トランプ52枚（ジョーカーなし）'],
+                image: 'header_speed.png',
+                color: '#81C3E2',
+                icon: 'bolt',
+                description: '反射神経と判断スピードがすべてを決める、トランプ界の格闘技。',
+                rules: [
+                    '【準備】カードを赤（ハート・ダイヤ）と黒（スペード・クラブ）の26枚ずつに分け、各プレイヤーに配ります。',
+                    '互いに山札の上から4枚を表にして場に並べます。さらに山札から1枚ずつ, 裏向きで場に出します。',
+                    '「スピード！」の合図で裏向きのカードをめくります。めくったカードの「前後（+1または-1）」の数字を持つカードを、表向きのカードから早い者勝ちで重ねていきます。',
+                    '表向きのカードは減った分、自分の山札の上からカードを補充し、常に4枚が表に見えるようにします。',
+                    '【勝利条件】自分の持ち札をすべて使い切ったプレイヤーの勝利です。'
+                ],
+                ruleImages: {
+                    1: 'rule_speed1.png'
+                },
+                notes: [
+                    'K（13）の次はA（1）を繋げることができます。',
+                    '同じ数字を重ねることはできません。（例：8の上に重ねられるのは7か9のみ）'
+                ]
+            },
+            {
+                id: 'poker',
+                name: 'ポーカー',
+                catch: '乗るか降りるか？究極の心理戦！',
+                playerTags: ['2', '3+'],
+                traits: { strategy: 4, luck: 4, memory: 2, reflex: 1 },
+                requirements: ['トランプ52枚', 'チップ（または代用品）', 'ジョーカー 1枚（任意）'],
+                image: 'header_poker.png', 
+                color: '#F7D06C',
+                icon: 'psychology',
+                description: '強い役を目指すだけでなく、相手をいかに騙すか（ブラフ）が重要な心理ゲーム。',
+                rules: [
+                    '【準備】各プレイヤーに裏向きで5枚ずつカードを配ります。残りは山札とします。',
+                    '自分の手札を確認し、チップを賭けます。自信がない場合は降りることも可能です。',
+                    '不要なカードを捨て、山札から同じ枚数だけ新しいカードを引き、役を強化します。',
+                    '【勝利条件】最後に残ったプレイヤー同士で手札を公開し、最も強い役を持っていたプレイヤーが場に賭けられたチップをすべて獲得します。'
+                ],
+                ruleImages: {
+                    0: 'rule_poker0.png'
+                },
+                hands: [
+                    { name: '役一覧', detail: 'ロイヤルストレートフラッシュからワンペアまで', image: 'hands_poker.png' }
+                ],
+                notes: [
+                    'ポーカーフェイスで弱気を見せないことが重要. ',
+                    '役が弱くても「強気に賭ける」ことで相手を降ろすブラフが醍醐味です。'
+                ]
+            },
+            {
+                id: 'solitaire',
+                name: 'ソリティア',
+                catch: '自分自身に挑む、至高の知的迷宮',
+                playerTags: ['1'],
+                traits: { strategy: 4, luck: 4, memory: 1, reflex: 1 },
+                requirements: ['トランプ52枚（ジョーカーなし）'],
+                image: 'header_solitaire.png',
+                color: '#E59A9C',
+                icon: 'self_improvement',
+                description: 'カードを規則に従って並べ替える、集中力を要するパズル。',
+                rules: [
+                    '【準備】カードをよく混ぜ、左から1枚、2枚、…7枚と、7つの列を作ります。各列の「一番上のカード」だけを表向きにし、残りは裏向きで重ねます。',
+                    '【準備】残りのカードは山札として伏せて置きます。さらに、カードをマーク（スート）ごとにAからKまで並べる組札エリアを4つ想定します。',
+                    '場にある表向きのカードは、数字が「1つ小さく」かつ「色が交互（赤と黒）」になる別の列へ移動させることができます（例：赤の9の上に黒の8を置く）。',
+                    '列の一番上のカードを移動させて裏向きのカードが露出したら、それを表に返します。空になった列には「K（13）」のみ置くことができます。',
+                    '移動できるカードがなくなったら、山札からカードを引きます。引いたカードが場や組札に置ける場合は移動させることができます。',
+                    '【勝利条件】すべてのマークについて、Aから順にKまで【組札】エリアに積み上げることができればゲームクリアです。'
+                ],
+                ruleImages: {
+                    0: 'rule_solitaire0.png'
+                },
+                notes: [
+                    '裏向きのカードをいかに早く表にするかが攻略の鍵です。',
+                    '闇雲に組札に送ると、場のカードが移動できなくなる「詰み」が発生することがあるので慎重に！',
+                    '山札から1枚ずつ引くルールと、3枚ずつ引くルールがあります。まずは1枚引きから挑戦しましょう。'
+                ]
+            },
+            {
+                id: 'memory',
+                name: '神経衰弱',
+                catch: '記憶力を研ぎ澄ませ！',
+                playerTags: ['2', '3+'],
+                traits: { strategy: 1, luck: 2, memory: 5, reflex: 1 },
+                requirements: ['トランプ52枚', 'ジョーカー1枚（任意）'],
+                image: 'header_sinkei.png', 
+                color: '#F7D06C',
+                icon: 'visibility',
+                description: '伏せられたカードの場所を覚え、ペアを揃えていく記憶力勝負。',
+                rules: [
+                    '【準備】すべてのカードを裏向きにして、重ならないように床やテーブルに広げます。',
+                    '自分の番が来たら、好きなカードを2枚めくります。',
+                    'めくった2枚の数字が同じであれば、そのペアを獲得し、続けてもう一度自分の番を行うことができます。',
+                    '数字が違った場合は、表にしたカードを全員に見えるようにしてから、元の場所へ裏向きに戻します。番が次の人に移ります。',
+                    'これを繰り返し、場にカードがなくなるまで続けます。',
+                    '【勝利条件】最終的に最も多くのカードを獲得したプレイヤーの勝利です。'
+                ],
+                ruleImages: {
+                    0: 'rule_sinkei0.png'
+                },
+                notes: [
+                    '他人がめくったカードの場所と数字を正確に記憶すること。',
+                    '広げたカードの位置がずれないよう、丁寧に戻すのがマナーです。'
+                ]
+            },
+            {
+                id: 'babanuki',
+                name: 'ババ抜き',
+                catch: '最初はやっぱりこれ！',
+                playerTags: ['2', '3+'],
+                traits: { strategy: 1, luck: 5, memory: 3, reflex: 1 },
+                requirements: ['トランプ52枚', 'ジョーカー 1枚'],
+                image: 'header_baba.png', 
+                color: '#81C3E2',
+                icon: 'mood_bad',
+                description: 'シンプルながらスリル満点！ジョーカーを引くのは誰だ？',
+                rules: [
+                    '【準備】プレイヤーに1枚ずつ、裏向きにすべてのカードを配ります。',
+                    '【準備】プレイヤーは配られたカードを見て、同じ数字のペアがあれば場に表向きで捨てます。',
+                    '最初の番の人を決めます。その人は、隣の人の手札からカードを1枚引き、自分の手札に加えます。自分の手札にペアができたら、そのカードを場に捨てます。',
+                    '同じようにして、今度は引かれた人がそのまた隣の人の手札から1枚引きます。これを繰り返します。',
+                    '【勝利条件】手札がすべてなくなった人からゲームを抜けます（勝ち）。最後にジョーカーを持っていたプレイヤーの負けです。'
+                ],
+                notes: [
+                    'どのカードを引いたのか相手にわからないよう、自分の手札をシャッフルしても大丈夫です。',
+                    'ジョーカーを引いても諦めないで！相手がカードを引き抜く瞬間の反応で相手を揺さぶりましょう。'
+                ]
+            },
+            {
+                id: 'buta',
+                name: 'ブタの尻尾',
+                catch: 'めくった瞬間、運命が決まる！',
+                playerTags: ['2', '3+'],
+                traits: { strategy: 1, luck: 5, memory: 1, reflex: 1 },
+                requirements: ['トランプ52枚', 'ジョーカー 1枚（任意）'],
+                image: 'header_buta.png',
+                color: '#E59A9C',
+                icon: 'panorama_fish_eye',
+                description: '円状に並べられたカードを1枚ずつめくる、シンプルながらスリル満点の運試しゲーム。',
+                rules: [
+                    '【準備】すべてのカードを裏向きにし、テーブルに円を描くように（尻尾の形に）広げます。中央にカードを出すスペースを空けておきます。',
+                    '順番に円の中から好きなカードを1枚引き、中央に表向きで出していきます。',
+                    '自分が引いたカードが、場の一番上のカードと「同じマーク」だった場合、場に溜まったカードをすべて引き取り手札とします。',
+                    '【勝利条件】円形に並べたカードがすべてなくなった時点でゲーム終了です。最終的に手元にあるカードが最も少ないプレイヤーの勝利となります。'
+                ],
+                ruleImages: {
+                0: 'rule_buta0.png'
+                },
+                localRules: [
+                    { name: 'アウトになる場合', detail: 'マークだけでなく「同じ数字」が重なった場合もアウトにする。' },
+                    { name: 'ジョーカーの扱い', detail: 'ジョーカーを引いた場合、手札をすべて場に出すことができる。' },
+                ],
+                notes: [
+                    'マークだけでなく「同じ数字」が重なった場合もアウトにするパターンもあります。',
+                    'ジョーカーを引いた場合、手札をすべて場に出すことができる。'
+                ]
+            },
+            {
+                id: 'pageone',
+                name: 'ページワン',
+                catch: '「はいページワンって言わなかった〜」',
+                playerTags: ['2', '3+'],
+                traits: { strategy: 2, luck: 3, memory: 2, reflex: 4 },
+                requirements: ['トランプ52枚'],
+                image: 'header_pageone.png',
+                color: '#81C3E2',
+                icon: 'looks_one',
+                description: '場と同じマークか数字のカードを出していく、スピードと宣言が鍵を握るエキサイティングなゲーム。',
+                rules: [
+                    '【準備】各プレイヤーに手札を5枚ずつ配り、残りを山札とします。山札の一番上の1枚をめくって場に出し、ゲーム開始です。',
+                    '時計回りに、場のカードと同じ「マーク」または「同じ数字」のカードを1枚出します。',
+                    '出せるカードがない場合は、出せるカードが出るまで山札から1枚ずつ引きます。引いたカードが出せる場合は、すぐに出すことができます。',
+                    '手札が残り2枚になり、そのうちの1枚を出して「最後の手札1枚」になる瞬間に「ページワン！」と宣言します。もし宣言を忘れ、他の人に指摘された場合は、ペナルティとして山札から5枚引かなければなりません。',
+                    '【勝利条件】最後の一枚を出すときに「ストップ！」と宣言します。一番早く手札をなくしたプレイヤーの勝利です。'
+                ],
+                ruleImages: {
+                0: 'rule_pageone0.png'
+                },
+                localRules: [
+                    { name: '特殊カード', detail: '「2（ツー）」を出したら次の人が2枚引くなど、数字によって特殊な効果を追加するルールも一般的です。' }
+                ],
+                notes: [
+                    '自分の手札だけでなく、相手の手札の残り枚数を常に意識しておくことが勝利への近道です。',
+                    '「ページワン」を言い忘れないよう、カードを出す瞬間の集中力が試されます。'
+                ]
+            },
+            {
+                id: 'jijinuki',
+                name: 'ジジ抜き',
+                catch: '最後まで分からない、正体不明の1枚',
+                playerTags: ['2', '3+'],
+                traits: { strategy: 1, luck: 5, memory: 3, reflex: 1 },
+                requirements: ['トランプ52枚（ジョーカーなし）'],
+                image: 'header_jiji.png',
+                color: '#E59A9C',
+                icon: 'question_mark',
+                description: 'ババ抜きの変則ルール。最初に抜かれた「正体不明の1枚」が誰にも分からないまま進む、最後までドキドキの展開！',
+                rules: [
+                    '【準備】ジョーカーを除いた52枚から、裏向きのままランダムに1枚抜き取ります。このカードは誰にも見せないように伏せておきます。',
+                    '残りのカードを全員に配り、手札に同じ数字のペアがあれば場に捨てます。',
+                    '順番に隣の人の手札から1枚引き、ペアができたら捨てます。これを繰り返します。',
+                    '【勝利条件】手札がすべてなくなった人から勝ち抜けです。最後に、最初に抜いた1枚と同じ数字のカードを持っていた人が負けとなります。'
+                ],
+                ruleImages: { 0: 'rule_jiji0.png' },
+                notes: [
+                    'ババ抜きと違い、最後に残るカードが何かわからないのが最大の特徴です。',
+                    'ジョーカーを1枚混ぜて、合計2枚の「余り」が出るようにするルールもあります。'
+                ]
+            },
+            {
+                id: 'shichinarabe',
+                name: '七並べ',
+                catch: '「ねぇ６止めてるのだれ！？」',
+                playerTags: ['3+'],
+                traits: { strategy: 4, luck: 2, memory: 3, reflex: 1 },
+                requirements: ['トランプ52枚'],
+                image: 'header_shichi.png',
+                color: '#F7D06C',
+                icon: 'format_list_numbered',
+                description: '「7」を中心に数字を並べていく。相手を妨害するためにあえてカードを出さない「戦略的パス」が勝負を分ける。',
+                rules: [
+                    '【準備】すべてのカードを配りきります。手札にある「7」のカードをすべて場の中央に縦に並べます。',
+                    '7の両隣（6または8）に繋がる数字のカードを順番に出していきます。',
+                    '出せるカードがない、または戦略的に出したくない場合は「パス」ができます。ただし、パスには回数制限（一般的に3回まで）があります。',
+                    '【勝利条件】一番早く手札をすべて並べ終えたプレイヤーの勝利です。パスの回数制限を超えて、出せるカードがない場合は脱落（負け）となります。'
+                ],
+                ruleImages: { 0: 'rule_shichi0.png' },
+                notes: [
+                    '端っこの数字（1や13）を止めて、他の人がカードを出せないようにする「ブロック」が有効な戦略です。',
+                    '脱落した人の手札はすべて場に並べられます。',
+                    '久しぶりに使うトランプの場合、すべてのカードが揃っているか確認するために七並べをすることもあります。'
+                ]
+            },
+            {
+                id: 'doubt',
+                name: 'ダウト',
+                catch: '嘘を見抜き、真実を暴け！',
+                playerTags: ['3+'],
+                traits: { strategy: 3, luck: 2, memory: 4, reflex: 3 },
+                requirements: ['トランプ52枚'],
+                image: 'header_doubt.png',
+                color: '#E59A9C',
+                icon: 'gavel',
+                description: '数字を順番に宣言しながらカードを出していく。嘘をついていると思ったら「ダウト！」と叫んで暴き出す心理戦。',
+                rules: [
+                    '【準備】ジョーカーを除いた52枚のカードを、全員に均等になるように配りきります。',
+                    '最初の人は「1（A）」と言いながら、カードを裏向きで中央に出します。次の人は「2」、その次は「3」と、時計回りに数字を1つずつ進めながら出していきます。',
+                    '出すカードは宣言した数字と違っても構いません（嘘をついても良い）。手札にその数字がない場合は、嘘をついて別のカードを出す必要があります。',
+                    '【ダウト！】誰かが嘘をついていると思ったら、次の人がカードを出す前に「ダウト！」と叫びます。出されたカードを確認し、嘘なら出した人が、本当なら叫んだ人が場に溜まったカードをすべて引き取ります。',
+                    '【勝利条件】一番早く手札がなくなった人の勝利です。'
+                ],
+                ruleImages: { 0: 'rule_doubt0.png' },
+                notes: [
+                    'カードを出す際、いかに自然に嘘をつくか、または相手の表情から嘘を見抜くかがポイントです。',
+                    '自分の宣言する数字が近づいてきたら、あらかじめ嘘をつく準備をしておくのも戦略です。'
+                ]
+            },
+            {
+                id: 'blackjack',
+                name: 'ブラックジャック',
+                catch: '21の深淵、ディーラーとの真剣勝負',
+                playerTags: ['2', '3+'],
+                traits: { strategy: 4, luck: 4, memory: 2, reflex: 1 },
+                requirements: ['トランプ52枚', 'チップ（または代用品）'],
+                image: 'header_black.png',
+                color: '#81C3E2',
+                icon: 'style',
+                description: 'カードの合計を「21」に近づけるカジノの定番。ディーラーとの駆け引きと、引き際の判断が勝敗を分ける。',
+                rules: [
+                    '【準備】プレイヤーとディーラーに2枚ずつカードを配ります。ディーラーのカードは1枚だけ表向き（アップカード）にします。',
+                    '自分の手札の合計を確認します。Aは「1」または「11」として数え、J・Q・Kは「10」として数えます。',
+                    '【アクション】合計が21に近づくよう、カードを追加する（ヒット）か、今の数字で勝負する（スタンド）かを選びます。21を超えると（バースト）即座に負けとなります。',
+                    '【ディーラーの行動】全員のアクション終了後、ディーラーは自分の合計が「17」以上になるまで必ずカードを引き続けなければなりません。',
+                    '【勝利条件】バーストせず、ディーラーよりも「21」に近い数字を持っていたプレイヤーの勝利です。'
+                ],
+                ruleImages: { 0: 'rule_black0.png' },
+                hands: [
+                    { name: 'カードの数え方', detail: '2〜10はそのまま、絵札（J,Q,K）は10、Aは1または11として状況に応じて有利な方で数えます。', image: 'hand_blackjack.png' }
+                ],
+                notes: [
+                    'ディーラーの表向きのカードを見て、相手がバーストする確率を予想するのが重要です。',
+                    '最初の2枚で合計が21（Aと10点札）になることを「ブラックジャック」と呼び、配当が高くなるのが一般的です。'
+                ]
+            }
+        ];
+
+        let state = { players: [], traits: [] };
+        let lastScrollY = 0;
+
+        function handleTagClick(type, value) {
+            if (type === 'players') {
+                state.players = state.players.includes(value) ? [] : [value];
+            } else {
+                state.traits = state.traits.includes(value) ? [] : [value];
+            }
+            renderAll();
+        }
+
+        function renderAll() {
+            const grid = document.getElementById('game-grid');
+            grid.innerHTML = '';
+            
+            const filtered = games.filter(g => {
+                const pMatch = state.players.length === 0 || state.players.some(p => g.playerTags.includes(p));
+                const tMatch = state.traits.length === 0 || state.traits.some(t => g.traits[t] >= 4);
+                return pMatch && tMatch;
+            });
+
+            document.querySelectorAll('.filter-chip').forEach(btn => {
+                const text = btn.innerText.trim();
+                let active = false;
+                if (btn.closest('#filter-players-container')) {
+                    const mapped = text.includes('1人') ? '1' : text.includes('2人') ? '2' : '3+';
+                    active = state.players.includes(mapped);
+                } else {
+                    const key = Object.keys(traitNames).find(k => text.includes(traitNames[k]));
+                    active = state.traits.includes(key);
+                }
+                btn.className = `filter-chip px-3 py-1.5 text-xs ${active ? 'active' : ''}`;
+            });
+
+            filtered.forEach(game => {
+                const card = document.createElement('div');
+                card.className = 'toy-card p-6 flex flex-col';
+                card.onclick = () => location.hash = game.id;
+
+                const headerContent = game.image 
+                    ? `<img src="${game.image}" alt="${game.name}">` 
+                    : `<span class="material-icons icon-placeholder" style="color: ${game.color}">${game.icon}</span>`;
+
+                card.innerHTML = `
+                    <div class="game-image-wrapper">${headerContent}</div>
+                    <div class="text-center mb-8">
+                        <h3 class="text-2xl font-[900] text-[#4A4541] mb-2">${game.name}</h3>
+                        <p class="text-xs font-bold text-[#A69F98] leading-tight px-2">${game.catch}</p>
+                    </div>
+                    <div class="w-full pt-6 border-t border-[#F1ECE7] space-y-4">
+                        <div class="flex flex-wrap gap-1.5 mb-4">
+                            ${game.playerTags.map(tagKey => `
+                                <div class="flex items-center gap-1.5 bg-[#F9F5F1] border-2 border-[#DAD1C9] rounded-2xl px-2.5 py-1">
+                                    <span class="material-icons text-[#4A4541]" style="font-size: 16px">${playerTagMeta[tagKey].icon}</span>
+                                    <span class="text-[12px] font-black text-[#4A4541]">${playerTagMeta[tagKey].label}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                        ${Object.keys(traitNames).map(k => `
+                            <div class="flex items-center gap-3">
+                                <span class="material-icons shrink-0" style="font-size: 20px; color: ${game.color}">${traitIcons[k]}</span>
+                                <span class="text-base font-black text-[#4A4541] w-14 shrink-0">${traitNames[k]}</span>
+                                <div class="progress-block">
+                                    <div class="progress-inner" style="width: ${game.traits[k]*20}%; background-color: ${game.color}"></div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function showDetail(game) {
+            const color = game.color;
+            const badgePattern = (str) => str.replace(/【(.*?)】/g, `<span class="inline-badge" style="background-color: ${color}25; border: 1px solid ${color}40; color: #4A4541;">$1</span>`);
+
+            document.getElementById('detail-title').innerText = game.name;
+            document.getElementById('detail-description').innerText = game.description;
+            
+            const detailPlayersContainer = document.getElementById('detail-players-container');
+            detailPlayersContainer.innerHTML = game.playerTags.map(tagKey => `
+                <div class="px-3 py-1 rounded-full text-[10px] font-black tracking-widest uppercase bg-[#EEEAE6] text-[#4A4541] flex items-center gap-1.5">
+                    <span class="material-icons" style="font-size: 14px">${playerTagMeta[tagKey].icon}</span>
+                    <span>${playerTagMeta[tagKey].label}</span>
+                </div>
+            `).join('');
+            
+            const detailParamsGrid = document.getElementById('detail-params-grid');
+            detailParamsGrid.innerHTML = Object.keys(traitNames).map(k => `
+                <div class="flex items-center gap-3 py-1.5 md:py-2">
+                    <div class="w-8 h-8 md:w-10 md:h-10 rounded-lg flex items-center justify-center shrink-0" style="background-color: ${game.color}20">
+                        <span class="material-icons" style="font-size: 20px; color: ${game.color}">${traitIcons[k]}</span>
+                    </div>
+                    <div class="w-14 md:w-16 shrink-0">
+                        <span class="text-sm md:text-base font-black text-[#4A4541]">${traitNames[k]}</span>
+                    </div>
+                    <div class="flex-1">
+                        <div class="progress-block" style="height: 10px">
+                            <div class="progress-inner" style="width: ${game.traits[k]*20}%; background-color: ${game.color}"></div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            const reqList = document.getElementById('detail-requirements-list');
+            reqList.innerHTML = (game.requirements || []).map(req => `
+                <div class="flex items-center gap-2 bg-[#EEEAE6] px-4 py-2 rounded-2xl">
+                    <span class="material-icons" style="font-size: 16px; color: ${game.color}">inventory_2</span>
+                    <span class="text-xs font-black text-[#4A4541]">${req}</span>
+                </div>
+            `).join('');
+
+            const detailImageArea = document.getElementById('detail-image-container');
+            detailImageArea.innerHTML = game.image 
+                ? `<img src="${game.image}" class="w-full h-full object-cover">` 
+                : `<span class="material-icons text-8xl" style="color:${game.color}">${game.icon}</span>`;
+
+            document.getElementById('detail-rules-steps').innerHTML = game.rules.map((r, i) => {
+                const subImage = (game.ruleImages && game.ruleImages[i]) 
+                    ? `<img src="${game.ruleImages[i]}" class="rule-sub-image" alt="Step Illustration">`
+                    : '';
+
+                return `
+                    <div class="flex flex-col gap-2 p-6 rounded-[24px] bg-[#F9F5F1]">
+                        <div class="flex gap-4 items-start">
+                            <div class="rule-number" style="background-color: ${game.color}; color: white">${i+1}</div>
+                            <p class="text-base font-bold text-[#4A4541] leading-relaxed text-left">${badgePattern(r)}</p>
+                        </div>
+                        <div class="flex justify-center w-full">
+                            ${subImage}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Hands section (Dynamic Title Logic)
+            const handsSection = document.getElementById('detail-hands-section');
+            const handsTitle = document.getElementById('detail-hands-title');
+            const handsList = document.getElementById('detail-hands-list');
+            if (game.hands) {
+                handsSection.classList.remove('hidden');
+                // タイトルを動的に切り替え（ポーカーは役、その他は強さ一覧など）
+                handsTitle.innerText = game.id === 'poker' ? '役の強さ（ハンド）' : 'カードの強さ一覧';
+                
+                handsList.innerHTML = game.hands.map(h => `
+                    <div class="p-4 rounded-2xl border-2 border-[#EEEAE6]">
+                        <span class="local-rule-badge" style="color:${game.color}">${h.name}</span>
+                        <p class="mt-1 text-sm font-bold text-[#4A4541] mb-2">${h.detail}</p>
+                        ${h.image ? `<img src="${h.image}" class="rule-sub-image" style="max-width:100%" alt="Hand List">` : ''}
+                    </div>
+                `).join('');
+            } else {
+                handsSection.classList.add('hidden');
+            }
+
+            const localRulesSection = document.getElementById('detail-local-rules-section');
+            const localRulesList = document.getElementById('detail-local-rules-list');
+            if (game.localRules) {
+                localRulesSection.classList.remove('hidden');
+                localRulesList.innerHTML = game.localRules.map(lr => `
+                    <div class="p-4 rounded-2xl border-2 border-[#EEEAE6]">
+                        <span class="local-rule-badge" style="color:${game.color}">${lr.name}</span>
+                        <p class="mt-1 text-sm font-bold text-[#4A4541]">${lr.detail}</p>
+                    </div>
+                `).join('');
+            } else {
+                localRulesSection.classList.add('hidden');
+            }
+
+            const notesSection = document.getElementById('detail-notes-section');
+            const notesTitleElement = document.getElementById('detail-notes-title');
+            const notesList = document.getElementById('detail-notes-list');
+            if (game.notes && game.notes.length > 0) {
+                notesSection.classList.remove('hidden');
+                notesSection.style.borderColor = game.color;
+                notesTitleElement.innerText = game.notesTitle || "補足";
+                notesList.innerHTML = game.notes.map(n => `
+                    <li class="flex gap-3 text-sm font-bold text-[#4A4541]">
+                        <span class="material-icons" style="color:${game.color}; font-size:18px">check_circle</span>
+                        <span>${badgePattern(n)}</span>
+                    </li>
+                `).join('');
+            } else {
+                notesSection.classList.add('hidden');
+            }
+        }
+
+        function router() {
+            const hash = location.hash.replace('#', '');
+            const listView = document.getElementById('list-view');
+            const detailView = document.getElementById('detail-view');
+
+            if (hash) {
+                const game = games.find(g => g.id === hash);
+                if (game) {
+                    // 詳細へ進む前に、現在の一覧画面でのスクロール位置を保存
+                    if (!listView.classList.contains('hidden')) {
+                        lastScrollY = window.scrollY;
+                    }
+                    showDetail(game);
+                    listView.classList.add('hidden');
+                    detailView.classList.remove('hidden');
+                    window.scrollTo(0, 0);
+                } else {
+                    // IDが無効な場合はハッシュをクリア
+                    location.hash = '';
+                }
+            } else {
+                listView.classList.remove('hidden');
+                detailView.classList.add('hidden');
+                renderAll();
+                // 一覧に戻った直後、保存していた位置にスクロールを復元
+                setTimeout(() => {
+                    window.scrollTo(0, lastScrollY);
+                }, 0);
+            }
+        }
+
+        window.addEventListener('hashchange', router);
+        window.onload = () => {
+            router();
+        };
+    </script>
+</body>
+</html>
