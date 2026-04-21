@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>トランプひろば</title>
-    <meta name="description" content="トランプのさまざまな遊び方を、画像つきで分かりやすく紹介。大富豪からポーカー、ソリティアまで幅広く網羅。">
+    <meta name="description" content="トランプのさまざまな遊び方を、画像つきで分かりやすく紹介。大富豪からポーカー、ソリティアまで。">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
@@ -19,80 +19,80 @@
                         <div class="w-12 h-12 rounded-xl bg-[#E59A9C] flex items-center justify-center shadow-sm">
                             <span class="material-icons text-white">grid_view</span>
                         </div>
-                        <h1 class="text-4xl font-[900] tracking-tighter text-[#4A4541]">トランプひろば</h1>
+                        <h1 class="text-4xl font-[900] tracking-normal text-[#4A4541]">トランプひろば</h1>
                     </div>
                     <p class="text-sm font-bold text-[#A69F98]">トランプのさまざまな遊び方を、画像つきで分かりやすく紹介しています。</p>
                 </div>
             </div>
 
-            <div class="mt-8 space-y-4">
+            <div class="mt-4 space-y-2">
                 <div class="flex flex-wrap items-center gap-4">
                     <span class="text-[10px] font-black text-[#A69F98] uppercase tracking-[0.1em]">あそぶ人数</span>
                     <div id="filter-players-container" class="flex gap-1 overflow-x-auto no-scrollbar pb-1">
-                        <button class="filter-chip px-2 py-1 text-xs" onclick="handleTagClick('players', '1')"><span class="material-icons">person</span>1人</button>
-                        <button class="filter-chip px-2 py-1 text-xs" onclick="handleTagClick('players', '2')"><span class="material-icons">people</span>2人</button>
-                        <button class="filter-chip px-2 py-1 text-xs" onclick="handleTagClick('players', '3+')"><span class="material-icons">groups</span>3人〜</button>
+                        <button class="filter-chip px-2 py-1 text-xs" onclick="handleTagClick('players', '1')">1人</button>
+                        <button class="filter-chip px-2 py-1 text-xs" onclick="handleTagClick('players', '2')">2人</button>
+                        <button class="filter-chip px-2 py-1 text-xs" onclick="handleTagClick('players', '3+')">3人〜</button>
                     </div>
                 </div>
                 <div class="flex flex-wrap items-center gap-4">
                     <span class="text-[10px] font-black text-[#A69F98] uppercase tracking-[0.1em]">ゲームの特徴</span>
                     <div id="filter-traits-container" class="flex gap-1 overflow-x-auto no-scrollbar pb-1">
-                        <button class="filter-chip px-2 py-1 text-xs" onclick="handleTagClick('traits', 'strategy')"><span class="material-icons">psychology</span>戦略</button>
-                        <button class="filter-chip px-2 py-1 text-xs" onclick="handleTagClick('traits', 'luck')"><span class="material-icons">casino</span>運</button>
-                        <button class="filter-chip px-2 py-1 text-xs" onclick="handleTagClick('traits', 'memory')"><span class="material-icons">auto_stories</span>記憶力</button>
-                        <button class="filter-chip px-2 py-1 text-xs" onclick="handleTagClick('traits', 'reflex')"><span class="material-icons">bolt</span>瞬発力</button>
+                        <button class="filter-chip px-2 py-1 text-xs" onclick="handleTagClick('traits', 'strategy')">戦略</button>
+                        <button class="filter-chip px-2 py-1 text-xs" onclick="handleTagClick('traits', 'luck')">運</button>
+                        <button class="filter-chip px-2 py-1 text-xs" onclick="handleTagClick('traits', 'memory')">記憶力</button>
+                        <button class="filter-chip px-2 py-1 text-xs" onclick="handleTagClick('traits', 'reflex')">瞬発力</button>
                     </div>
                 </div>
             </div>
         </header>
 
         <main class="max-w-7xl mx-auto px-6 pb-20 w-full">
-            <div id="game-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"></div>
+            <div id="game-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6"></div>
         </main>
     </div>
 
     <!-- Detail View (SPA) -->
     <div id="detail-view" class="hidden min-h-screen bg-white">
         <div class="max-w-3xl mx-auto pb-20">
-            <nav class="sticky top-0 bg-white/80 backdrop-blur-md z-20 p-4 md:p-6 mb-4">
+            <nav class="sticky top-0 bg-white/80 backdrop-blur-md z-20 p-4 md:p-6 mb-2">
                 <button onclick="location.hash=''" class="flex items-center gap-2 text-[#A69F98] hover:text-[#4A4541] font-black py-2 transition-colors">
                     <span class="material-icons">arrow_back</span>
                     <span class="text-xs uppercase tracking-widest">もどる</span>
                 </button>
             </nav>
 
-            <div id="detail-header-box" class="px-6 md:px-10 pb-6 flex flex-col items-center text-center">
-                <div id="detail-image-container" class="w-full h-56 md:h-80 bg-[#F9F5F1] rounded-[32px] mb-8 overflow-hidden flex items-center justify-center"></div>
-                <h2 id="detail-title" class="text-3xl md:text-5xl font-[900] mb-4 tracking-tight text-[#4A4541]"></h2>
-                <div id="detail-players-container" class="flex flex-wrap justify-center gap-1.5 mb-6"></div>
+            <div id="detail-header-box" class="px-6 md:px-10 pb-2 flex flex-col items-center text-center">
+                <div id="detail-image-container" class="w-full h-40 md:h-48 bg-[#F9F5F1] rounded-[32px] mb-3 overflow-hidden flex items-center justify-center"></div>
+                <h2 id="detail-title" class="text-3xl md:text-5xl font-[900] m-3 tracking-tight text-[#4A4541]"></h2>
+                <div id="detail-players-container" class="flex flex-wrap justify-center gap-1.5 mb-4"></div>
             </div>
             
             <div class="px-6 md:px-10">
-                <div id="detail-params-grid" class="grid grid-cols-1 gap-3 mb-10 bg-[#F9F5F1] p-6 rounded-[32px]"></div>
+                <div id="detail-params-grid" class="grid grid-cols-1 gap-2 m-6 bg-[#F9F5F1] p-4 rounded-[32px]"></div>
 
-                <p id="detail-description" class="text-[#4A4541] font-bold leading-relaxed mb-10 text-center text-base md:text-lg"></p>
+                <p id="detail-description" class="text-[#4A4541] font-bold leading-relaxed m-6 text-center text-base md:text-lg"></p>
                 
-                <div class="mb-12 p-8 rounded-[32px] border-2 border-[#EEEAE6]">
-                    <h4 class="text-sm font-black text-[#A69F98] uppercase tracking-[0.15em] mb-6 text-center">用意するもの</h4>
+                <div class="m-6 p-4 md:p-6 rounded-[32px] border-2 border-[#EEEAE6]">
+                    <h4 class="text-sm font-black text-[#A69F98] uppercase tracking-[0.15em] mb-3 text-center">用意するもの</h4>
                     <div id="detail-requirements-list" class="flex flex-wrap justify-center gap-4"></div>
                 </div>
 
-                <div class="mb-12">
-                    <h4 class="text-sm font-black text-[#A69F98] uppercase tracking-[0.15em] mb-8 text-center">ゲームの流れ</h4>
+                <div class="mb-8">
+                    <h4 class="text-sm font-black text-[#A69F98] uppercase tracking-[0.15em] mb-4 text-center">ゲームの流れ</h4>
                     <div id="detail-rules-steps" class="space-y-6"></div>
                 </div>
 
-                <div id="detail-hands-section" class="mb-12 hidden">
-                    <h4 id="detail-hands-title" class="text-sm font-black text-[#A69F98] uppercase tracking-[0.15em] mb-8 text-center">強さ一覧</h4>
+                <div id="detail-hands-section" class="mb-8 hidden">
+                    <h4 id="detail-hands-title" class="text-sm font-black text-[#A69F98] uppercase tracking-[0.15em] mb-4 text-center">強さ一覧</h4>
                     <div id="detail-hands-list" class="space-y-4"></div>
                 </div>
 
-                <div id="detail-local-rules-section" class="mb-12 hidden">
-                    <h4 id="detail-local-rules-title" class="text-sm font-black text-[#A69F98] uppercase tracking-[0.15em] mb-8 text-center">追加できるオプションルール</h4>
+                <div id="detail-local-rules-section" class="mb-8 hidden">
+                    <h4 id="detail-local-rules-title" class="text-sm font-black text-[#A69F98] uppercase tracking-[0.15em] mb-4 text-center">追加できるオプションルール</h4>
                     <div id="detail-local-rules-list" class="space-y-4"></div>
                 </div>
 
-                <div id="detail-notes-section" class="bg-[#F9F5F1] rounded-[40px] p-8 md:p-10 mb-12 hidden border-l-[16px]">
+                <div id="detail-notes-section" class="bg-[#F9F5F1] rounded-[40px] p-8 md:p-10 mb-8 hidden border-l-[16px]">
                     <h4 id="detail-notes-title" class="text-sm font-black text-[#A69F98] uppercase tracking-[0.15em] mb-6">Master's Tip</h4>
                     <ul id="detail-notes-list" class="space-y-4"></ul>
                 </div>
@@ -121,7 +121,7 @@
                 image: 'header_daifugo.png', 
                 color: '#E59A9C',
                 icon: 'military_tech',
-                description: '全員に配られた手札を一番早くなくした人が勝ち！カードを出すたびに階級が決まる、トランプの定番ゲームです。',
+                description: 'ゲームのたびに変わる階級。何度もやりたくなるパーティーゲームの王道。',
                 rules: [
                     '【準備】プレイヤー全員に、すべてのカードを裏向きのまま配ります。',
                     'プレイヤーは手札のカードを順番に出していきます。場にあるカードより強いカードを出すことができます。出せない、または出したくない場合はパスが可能です。',
@@ -129,7 +129,6 @@
                     '【勝利条件】手札がすべてなくなった人から上がり（勝ち）となります。上がった順に「大富豪」「富豪」などの階級が与えられます。'
                 ],
                 ruleImages: {
-                    0: 'rule_daifugo0.png'
                 },
                 hands: [
                     { name: 'カードの強さ', detail: '3が最も弱く、2が最強です。', image: 'hand_daifugo1.png' }
@@ -150,7 +149,7 @@
             {
                 id: 'speed',
                 name: 'スピード',
-                catch: '反射神経の限界へ挑め',
+                catch: '反射神経の限界へ挑め！',
                 playerTags: ['2'],
                 traits: { strategy: 1, luck: 2, memory: 1, reflex: 5 },
                 requirements: ['トランプ52枚（ジョーカーなし）'],
@@ -178,12 +177,12 @@
                 name: 'ポーカー',
                 catch: '乗るか降りるか？究極の心理戦！',
                 playerTags: ['2', '3+'],
-                traits: { strategy: 4, luck: 4, memory: 2, reflex: 1 },
+                traits: { strategy: 5, luck: 4, memory: 2, reflex: 1 },
                 requirements: ['トランプ52枚', 'チップ（または代用品）', 'ジョーカー 1枚（任意）'],
                 image: 'header_poker.png', 
                 color: '#F7D06C',
                 icon: 'psychology',
-                description: '強い役を目指すだけでなく、相手をいかに騙すか（ブラフ）が重要な心理ゲーム。',
+                description: '強い役を目指すだけでなく、相手をいかに騙すかが重要な心理ゲーム。',
                 rules: [
                     '【準備】各プレイヤーに裏向きで5枚ずつカードを配ります。残りは山札とします。',
                     '自分の手札を確認し、チップを賭けます。自信がない場合は降りることも可能です。',
@@ -282,14 +281,14 @@
             {
                 id: 'buta',
                 name: 'ブタの尻尾',
-                catch: 'めくった瞬間、運命が決まる！',
+                catch: 'めくる瞬間のドキドキを楽しもう',
                 playerTags: ['2', '3+'],
                 traits: { strategy: 1, luck: 5, memory: 1, reflex: 1 },
                 requirements: ['トランプ52枚', 'ジョーカー 1枚（任意）'],
                 image: 'header_buta.png',
                 color: '#E59A9C',
                 icon: 'panorama_fish_eye',
-                description: '円状に並べられたカードを1枚ずつめくる、シンプルながらスリル満点の運試しゲーム。',
+                description: 'ブタの尻尾に見立てたカードを1枚ずつめくる、スリル満点の運試し。',
                 rules: [
                     '【準備】すべてのカードを裏向きにし、テーブルに円を描くように（尻尾の形に）広げます。中央にカードを出すスペースを空けておきます。',
                     '順番に円の中から好きなカードを1枚引き、中央に表向きで出していきます。',
@@ -365,7 +364,7 @@
                 name: '七並べ',
                 catch: '「ねぇ６止めてるのだれ！？」',
                 playerTags: ['3+'],
-                traits: { strategy: 4, luck: 2, memory: 3, reflex: 1 },
+                traits: { strategy: 4, luck: 3, memory: 2, reflex: 1 },
                 requirements: ['トランプ52枚'],
                 image: 'header_shichi.png',
                 color: '#F7D06C',
@@ -428,11 +427,11 @@
                 ],
                 ruleImages: { 0: 'rule_black0.png' },
                 hands: [
-                    { name: 'カードの数え方', detail: '2〜10はそのまま、絵札（J,Q,K）は10、Aは1または11として状況に応じて有利な方で数えます。', image: 'hand_blackjack.png' }
+                    { name: 'カードの数え方', detail: '2〜10はそのまま、絵札（J,Q,K）は10、Aは1または11として状況に応じて有利な方で数えます。'}
                 ],
                 notes: [
                     'ディーラーの表向きのカードを見て、相手がバーストする確率を予想するのが重要です。',
-                    '最初の2枚で合計が21（Aと10点札）になることを「ブラックジャック」と呼び、配当が高くなるのが一般的です。'
+                    '最初の2枚で合計が21（Aと10点札）になることを「ブラックジャック」と呼びます。'
                 ]
             }
         ];
@@ -474,21 +473,21 @@
 
             filtered.forEach(game => {
                 const card = document.createElement('div');
-                card.className = 'toy-card p-6 flex flex-col';
+                card.className = 'toy-card p-4 flex flex-col';
                 card.onclick = () => location.hash = game.id;
 
                 const headerContent = game.image 
-                    ? `<img src="${game.image}" alt="${game.name}">` 
+                    ? `<img src="${game.image}" alt="${game.name}" class="w-full h-full object-contain">` 
                     : `<span class="material-icons icon-placeholder" style="color: ${game.color}">${game.icon}</span>`;
 
                 card.innerHTML = `
                     <div class="game-image-wrapper">${headerContent}</div>
-                    <div class="text-center mb-8">
-                        <h3 class="text-2xl font-[900] text-[#4A4541] mb-2">${game.name}</h3>
+                    <div class="text-center mb-3">
+                        <h3 class="text-2xl font-[900] text-[#4A4541] mb-1">${game.name}</h3>
                         <p class="text-xs font-bold text-[#A69F98] leading-tight px-2">${game.catch}</p>
                     </div>
-                    <div class="w-full pt-6 border-t border-[#F1ECE7] space-y-4">
-                        <div class="flex flex-wrap gap-1.5 mb-4">
+                    <div class="w-full pt-3 border-t border-[#F1ECE7] space-y-2">
+                        <div class="flex flex-wrap gap-1.5 mb-2">
                             ${game.playerTags.map(tagKey => `
                                 <div class="flex items-center gap-1.5 bg-[#F9F5F1] border-2 border-[#DAD1C9] rounded-2xl px-2.5 py-1">
                                     <span class="material-icons text-[#4A4541]" style="font-size: 16px">${playerTagMeta[tagKey].icon}</span>
@@ -497,7 +496,7 @@
                             `).join('')}
                         </div>
                         ${Object.keys(traitNames).map(k => `
-                            <div class="flex items-center gap-3">
+                            <div class="flex items-center gap-1.5">
                                 <span class="material-icons shrink-0" style="font-size: 20px; color: ${game.color}">${traitIcons[k]}</span>
                                 <span class="text-base font-black text-[#4A4541] w-14 shrink-0">${traitNames[k]}</span>
                                 <div class="progress-block">
@@ -528,7 +527,7 @@
             
             const detailParamsGrid = document.getElementById('detail-params-grid');
             detailParamsGrid.innerHTML = Object.keys(traitNames).map(k => `
-                <div class="flex items-center gap-3 py-1.5 md:py-2">
+                <div class="flex items-center gap-3 py-0.5">
                     <div class="w-8 h-8 md:w-10 md:h-10 rounded-lg flex items-center justify-center shrink-0" style="background-color: ${game.color}20">
                         <span class="material-icons" style="font-size: 20px; color: ${game.color}">${traitIcons[k]}</span>
                     </div>
@@ -553,7 +552,7 @@
 
             const detailImageArea = document.getElementById('detail-image-container');
             detailImageArea.innerHTML = game.image 
-                ? `<img src="${game.image}" class="w-full h-full object-cover">` 
+                ? `<img src="${game.image}" class="w-full h-full object-contain">` 
                 : `<span class="material-icons text-8xl" style="color:${game.color}">${game.icon}</span>`;
 
             document.getElementById('detail-rules-steps').innerHTML = game.rules.map((r, i) => {
@@ -562,7 +561,7 @@
                     : '';
 
                 return `
-                    <div class="flex flex-col gap-2 p-6 rounded-[24px] bg-[#F9F5F1]">
+                    <div class="flex flex-col gap-2 p-4 rounded-[24px] bg-[#F9F5F1]">
                         <div class="flex gap-4 items-start">
                             <div class="rule-number" style="background-color: ${game.color}; color: white">${i+1}</div>
                             <p class="text-base font-bold text-[#4A4541] leading-relaxed text-left">${badgePattern(r)}</p>
