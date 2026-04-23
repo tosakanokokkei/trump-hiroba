@@ -5,6 +5,3 @@
 ## 使用素材について
 - トランプの画像はこちらから使用しています。
    https://booth.pm/ja/items/4610940
-
-## 公開URL
-https://あなたのユーザー名.github.io/trumphiroba/
